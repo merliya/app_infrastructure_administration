@@ -1,0 +1,147 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body,
+admin-root {
+  height: 100%;
+  margin: 0;
+}
+
+admin-root,
+admin-employees,
+admin-task-management {
+  display: flex;
+  flex: auto;
+  min-height: 0;
+}
+
+.container {
+  padding: 0.3em;
+}
+
+h1,
+h2,
+h5 {
+  margin: 0 0 0.6em 0;
+}
+
+.ui-g-1,
+.ui-g-2,
+.ui-g-3,
+.ui-g-4,
+.ui-g-5,
+.ui-g-6,
+.ui-g-7,
+.ui-g-8,
+.ui-g-9,
+.ui-g-10,
+.ui-g-11,
+.ui-g-12 {
+  padding: 0;
+}
+
+.full-width {
+  width: 100% !important;
+}
+
+p-autocomplete .filter-autocomplete {
+  width: 100%;
+
+  .ui-autocomplete-input {
+    width: 100%;
+  }
+}
+
+p-accordion .ui-accordion .ui-accordion-content-wrapper .ui-accordion-content {
+  padding: 10px;
+}
+
+.pull-right {
+  float: right;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 10000;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  p-progressSpinner {
+    flex: auto;
+    margin-left: 0;
+    text-align: center;
+  }
+}
+
+.data-panel-overflow-menu ul li a {
+  :active {
+    color: #00557e;
+  }
+
+  :visited {
+    color: #007dba;
+  }
+
+  :hover {
+    color: #00aafc;
+  }
+
+  .ui-menuitem-text {
+    font-size: 0.8em;
+  }
+}
+
+.ui-accordion {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+data-panel-right {
+  display: flex;
+  flex: auto;
+  min-height: 0;
+}
+
+p-panel {
+  display: flex;
+  flex: auto;
+  min-height: 0;
+
+  .ui-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    min-height: 0;
+    background: unset;
+    box-shadow: unset;
+
+    .ui-panel-titlebar {
+      background: white;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    .ui-panel-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.2);
+
+      .ui-panel-content {
+        flex: 1 0;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+    }
+  }
+}

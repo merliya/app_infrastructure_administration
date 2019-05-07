@@ -1,0 +1,93 @@
+
+.full-width{
+    width:100%
+}
+
+.form-content-input {
+  padding-right: 10px;
+}
+
+.link{
+    cursor: pointer;
+} 
+.info_icon_style{
+    position: absolute;
+    left: 178px;
+    top: 10px;
+    color: #949292;
+    font-size: 19px;
+    vertical-align: middle;
+}
+/deep/.work_info_icon .popover.top > .arrow:after {
+    border-top-color: #134365  !important;
+}
+
+/deep/.pop-over-container-design popover-container {
+    display: block !important;
+    top: 15px !important;
+    left: 0px !important;
+    width: 180px !important;
+    font-size: 9px !important;
+    padding: 10px !important;
+    background-color: #134365 !important;
+    color: #fff;
+}
+
+/deep/.pop-over-container-design .popover.bottom > .arrow{
+    left: 30% !important;
+}
+
+/deep/.pop-over-container-design .popover.bottom > .arrow:after {
+    border-bottom-color: #134365  !important;
+}
+
+/deep/.hideClass{
+    display: none !important;
+}
+
+/deep/.work_info_icon popover-container{
+    display: block !important;
+    left: 52px !important;
+    width: 270px !important;
+    font-size: 9px !important;
+    padding: 10px !important;
+    z-index: 99999999999 !important;
+    background-color: #134365 !important;
+    color: #fff;
+}
+
+p-footer {
+    p-button {
+        margin-left: 10px;
+    }
+}
+.data-table{
+    margin-top:10px;
+}
+
+a {
+    font-size:14px;
+}
+
+.invalid {
+  color: #cc2d24;
+}
+
+p-table ::ng-deep .ui-table .ui-table-wrapper table { 
+    overflow:visible;
+}
+.ui-editing-cell {
+    overflow:visible;
+}
+
+::ng-deep .ui-autocomplete-input {
+    width: inherit;
+}
+
+p-panel ::ng-deep .ui-panel{
+  position: relative;
+}
+
+.loading-overlay {
+  border-radius: 6px;
+}

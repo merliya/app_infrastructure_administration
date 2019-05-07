@@ -1,0 +1,135 @@
+<p-panel *ngIf = "templateName !== 'profile'">
+    <p-header>
+      <span *ngIf = "templateName !== 'profile'" class="h2">Team Details</span>
+      <span *ngIf = "templateName === 'profile'" class="h2">Team Profile</span>
+      <div class="pull-right ui-g">
+        <div class="panel-button" (click)="goToFullScreen()">
+          <i class="icon-User_Group_Solid"></i>
+        </div>
+        <div class="panel-button" (click)="onClose()">
+          <i class="icon-Menu_Close"></i>
+        </div>
+      </div>
+    </p-header>
+    <div *ngIf="loading" class="loading-overlay">
+      <p-progressSpinner></p-progressSpinner>
+    </div>
+    <ng-container *ngTemplateOutlet="teamDetails"></ng-container>
+    <p-footer>
+      <div class="pull-right ui-g">
+        <p-button label="Cancel" styleClass="ui-button-tertiary" (click)="onClose()"></p-button>
+        <ng-container *ngIf="teamDetail?.teamStatus==='Active'; else activate">
+          <p-button label="Inactivate Team" styleClass="ui-button-secondary" (click)="inactivateTeam()"></p-button>
+          <p-button label="Edit" styleClass="ui-button-primary" (click)="onEdit()"></p-button>
+        </ng-container>
+        <ng-template #activate>
+          <p-button label="Activate Team" styleClass="ui-button-primary" (click)="activateTeam()"></p-button>
+        </ng-template>
+      </div>
+    </p-footer>
+  </p-panel>
+  <ng-template #teamDetails>
+      <div class="ui-g">
+        <div class="ui-g-6">
+          <div class="row"><span class="field-label">Team Name</span><span>{{teamDetail?.teamName}}</span></div>
+          <div class="row"><span class="field-label">Team Leader</span><span>{{teamDetail?.teamLeader}} ({{teamDetail?.teamLeaderUserID}}), {{teamDetail?.teamLeaderTitle}}</span></div>
+          <div class="row"><span class="field-label">Team Status</span><span>{{teamDetail?.teamStatus}}</span></div>
+        </div>
+        <div class="ui-g-6">
+          <div class="row"><span class="field-label">Updated On</span><span>{{teamDetail?.updatedOn | date:"MM/dd/yyyy, hh:mma z" }}</span></div>
+          <div class="row"><span class="field-label">Updated By</span><span>{{teamDetail?.updatedBy}}</span></div>
+          <div class="row"><span class="field-label">Created On</span><span>{{teamDetail?.createdOn | date:"MM/dd/yyyy, hh:mma z" }}</span></div>
+          <div class="row"><span class="field-label">Created By</span><span>{{teamDetail?.createdBy}}</span></div>
+        </div>
+      </div>
+      <div class='data-table'>
+        <p-table [value]="teamDetail?.teamMembers">
+          <ng-template pTemplate="caption">
+            Team Members
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Name</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-teamMember>
+            <tr>
+              <td>{{ teamMember.fullName }} ({{ teamMember.userName }}) {{ teamMember.title }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+  </ng-template>
+  <div *ngIf = "templateName === 'profile'">
+      <ng-container *ngTemplateOutlet="teamIdDetails"></ng-container>
+  </div> 
+  <ng-template #teamIdDetails>
+      <div class="ui-g">
+          <p-header>
+            <span class="h2">{{teamDetail?.teamName}}</span>
+          </p-header>
+        </div>
+        <div class="ui-g" style="width: 100%;">
+            <div class="ui-g-3" style="width: 100%;" style="font-size: 14px;">
+              <div class="row"><span class="field-label">Team Leader</span><span>{{teamDetail?.teamLeader}} ({{teamDetail?.teamLeaderUserID}})</span></div>
+              <div class="row"><span class="field-label">Team Status</span><span>{{teamDetail?.teamStatus}}</span></div>
+            </div>
+            <div class="ui-g-3" style="width: 100%;" style="font-size: 14px;">
+              <div class="row"><span class="field-label">Updated On</span><span>{{teamDetail?.updatedOn | date:"MM/dd/yyyy, hh:mma z" }}</span></div>
+              <div class="row"><span class="field-label">Updated By</span><span>{{teamDetail?.updatedBy}}</span></div>
+            </div>
+            <div class="ui-g-3" style="width: 100%;" style="font-size: 14px;">
+              <div class="row"><span class="field-label">Created On</span><span>{{teamDetail?.createdOn | date:"MM/dd/yyyy, hh:mma z" }}</span></div>
+              <div class="row"><span class="field-label">Created By</span><span>{{teamDetail?.createdBy}}</span></div>
+            </div>
+        </div>
+        <div class='data-table'>
+            <p-table title="Team Members" [value]="teamDetail?.teamMembers">
+              <ng-template pTemplate="caption">Team Members <hr class="table-underline"></ng-template>
+            
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Name</th>
+                  <th>Number of Task Assignments</th>
+                </tr>
+              </ng-template>
+              
+              <ng-template pTemplate="body" let-teamMember>
+                <tr class="link" (click)="onRowSelect(teamMember?.personEmployeeID);">
+                  <td>{{teamMember.fullName}}</td>
+                  <td>{{teamMember?.taskCount}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+        </div>
+          <div class='data-table'>
+              <p-table title="Task Assignments" [value]="teamDetail?.taskAssignments">
+                  <ng-template pTemplate="caption">Task Assignments <hr class="table-underline"> </ng-template>
+                  <ng-template pTemplate="header">
+                    <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>Assignment Title</th>
+                    <th>Task Category</th>
+                    <th>User Role</th>
+                    <th>Work Type</th>
+                    <th>Work Value</th>
+                  </tr>
+                  </ng-template>
+                <ng-template pTemplate="body" let-value>
+                  <tr class="link" (click)="onTaskSelect(value?.taskId);">
+                    <td>{{value?.name}}</td>
+                    <td>{{value?.title}}</td>
+                    <td>{{value?.assignmentTitle}}</td>
+                    <td>{{value?.taskCategory}}</td>
+                    <td>{{value?.userRole}}</td>
+                    <td>
+                      <p *ngFor="let workTypeObject of value?.workType">{{workTypeObject.workTypeName}}</p>                      
+                    </td>
+                    <td><p *ngFor="let workTypeObject of value?.workType">{{workTypeObject.WorkValue}}</p></td>
+                  </tr>
+                </ng-template>
+              </p-table>
+          </div>
+  </ng-template>
+  

@@ -1,0 +1,12 @@
+// App Component SCSS
+
+.sidebar-unpinned {
+    margin-left: -200px;
+}
+
+.router-container {
+    padding: 0 .7em;
+    transition: margin 400ms ease;
+    display: flex;
+    flex-direction: column;
+}

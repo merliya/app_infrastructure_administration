@@ -1,0 +1,82 @@
+.right-header-link {
+    line-height: 60px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-button {
+    margin-left: 20px;
+    cursor: pointer;
+    color: #007DBA;
+}
+
+.user-image {
+    float: left;
+    width: 77px;
+    height: 77px;
+    border-radius: 50%;
+    margin: 0 10px 10px 0;
+}
+
+.employee-name {
+    font-weight: 650;
+    color: #444;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+.employee-title {
+    font-weight: 650;
+    color: #939393;
+    font-size: 12px;
+    line-height: 12px;
+}
+
+.contact-icons {
+    font-size: 22px;
+    color: #007DBA;
+    margin-top: 15px;
+    text-decoration: none;
+    a {
+        margin-right: 6px;
+    }
+    a:hover {
+        text-decoration: none;
+    }
+}
+
+.field-label {
+    color: #939393;
+    margin-right: 5px;
+}
+
+.manager-block {
+    padding-bottom: 10px;
+}
+
+.right-inner-panel {
+    padding-top: 10px;
+}
+
+data-panel-right p-panel ::ng-deep .ui-panel{
+    position: relative;
+}
+
+.loading-overlay {
+    border-radius: 6px;
+}
+
+p-footer {
+    p-button {
+        margin-left: 10px;
+    }
+}
+
+shared-data-panel {
+  display: flex;
+  flex: auto;
+  min-height: 0;
+}

@@ -1,0 +1,51 @@
+p-footer {
+    p-button {
+        margin-left: 10px;
+    }
+}
+
+.link{
+    cursor: pointer;
+}
+
+.field-label {
+    color: #939393;
+    margin-right: 5px;
+}
+
+.row{
+    margin-top:5px;
+}
+
+.panel-button {
+    margin-left: 20px;
+    cursor: pointer;
+    color: #007DBA;
+}
+
+.user-image {
+    float: left;
+    width: 77px;
+    height: 77px;
+    border-radius: 50%;
+    margin: 0 10px 10px 0;
+}
+.headers {
+    font-weight: bold !important;
+}
+
+.data-table{
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.table-underline {
+    margin-bottom: 1px;
+    opacity: 0.2;
+    margin-top: 20px;
+}
+
+td, p {
+    overflow: hidden;
+text-overflow: ellipsis;
+}

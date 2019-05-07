@@ -1,0 +1,13 @@
+<navigation-menu
+  menu-title="Administration"
+  [pinnedOpen]="sidebarPinned"
+  [menu-items]="menuItems"
+  (errorHandler)="onMenuError($event)"
+  (pin-handler)="onMenuPin($event)" >
+</navigation-menu>
+<div class="router-container" [ngClass]="{'sidebar-unpinned': !sidebarPinned}">
+  <p-breadcrumb [model]="breadcrumbItems"></p-breadcrumb>
+  <p-growl [(value)]="msgs" [baseZIndex]="10050"></p-growl>
+  <router-outlet></router-outlet>
+  <p-confirmDialog header="Confirmation"></p-confirmDialog>
+</div>

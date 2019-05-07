@@ -1,0 +1,208 @@
+<p-panel>
+  <p-header>
+    <span class="h2">Task Assignment {{updating? 'Edit' : ''}} Details</span>
+    <div class="pull-right ui-g">
+      <div class="panel-button" (click)="confirmChanges()">
+        <i class="icon-Menu_Close"></i>
+      </div>
+    </div>
+  </p-header>
+  <div *ngIf="loading" class="loading-overlay">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="ui-g">
+      <div class="ui-g-6">
+        <span class="ui-float-label form-content-input full-width">
+          <input formControlName="assignmentTitle" type="text" pInputText class="full-width">
+          <label for="assignmentTitle">Assignment Title</label>
+        </span>
+        <p-message severity="error" text="Please enter Assignment Title {{taskForm.get('assignmentTitle').errors?.maxlength ? 'with fewer than 30 characters' : ''}}"
+          *ngIf="isTouchedAndInvalid('assignmentTitle')"></p-message>
+      </div>
+      <div class="ui-g-6">
+        <span class="ui-float-label" style="width: 100%;">
+          <p-autoComplete #categoryAutoComplete formControlName="category" (onSelect)="taskCategoryChanged()" (onClear)="onTypeaheadClear('category', categoryAutoComplete)"
+            [suggestions]="taskCategoryOptions" (completeMethod)="fetchTaskCategoryOptions($event)" [dropdown]="true" emptyMessage="No results found"
+            [forceSelection]="true" name="category" field="taskCategoryName" [style]="{'width': '100%'}"appendTo="body">
+          </p-autoComplete>
+          <label for="category">Task Category</label>
+        </span>
+        <p-message severity="error" text="Please enter Task Category"
+          *ngIf="isTouchedAndInvalid('category') || validateAddButtons()"></p-message>
+      </div>
+      <div class="ui-g-12" style="margin-top: 25px;">
+        <span class="ui-float-label" style="width: 100%;">
+          <p-autoComplete formControlName="responsibleTeams" class="full-width" name="responsibleTeams"
+            [multiple]="true" [suggestions]="responsibleTeamsSuggestions" [ngClass]="{'ng-invalid': taskForm.errors?.unusedTeam}"
+            (completeMethod)="searchResponsibleTeams($event)" (onSelect)="findTeamMembers()" emptyMessage="No results found"
+            (onUnselect)="findTeamMembers()" field="teamName"  appendTo="body">
+          </p-autoComplete>
+          <label for="responsibleTeams">Responsible Teams</label>
+        </span>
+        <p-message severity="error" text="Please enter Responsible Teams"
+          *ngIf="isTouchedAndInvalid('responsibleTeams') || validateAddButtons()"></p-message>
+        <p-message severity="error" text="{{taskForm.errors?.unusedTeam?.name || ''}}"
+          *ngIf="taskForm.errors?.unusedTeam"></p-message>
+      </div>
+    </div>
+    <div class='data-table'>
+      <p-table [value]="formAssignToArray.controls" [(selection)]="selectedAssignedTo" formArrayName="assignToList">
+        <ng-template pTemplate="caption">
+          Assigned To
+          <span class="pull-right">
+            <a *ngIf="selectedAssignedTo.length === 0" class="link" (click)='addTeam()'>Add Team or Team Member </a>
+            <a *ngIf="selectedAssignedTo.length !== 0" class="link" (click)='removeTeams()'>Remove Team or Team Member</a>
+          </span>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3em">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th>Team or Team Member</th>
+            <th>User Role</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-assignedTo let-i="rowIndex">
+          <tr [pSelectableRow]="assignedTo" [formGroupName]="i">
+            <td>
+              <p-tableCheckbox [value]="assignedTo"></p-tableCheckbox>
+            </td>
+            <td pEditableColumn (click)="onEditCellClick(assigneeCell)" title="{{formAssignToArray?.get([i, 'assignee'])?.value?.name || 'Select Team or Team Member'}}">
+              <p-cellEditor #assigneeCell>
+                <ng-template pTemplate="input">
+                  <p-autoComplete #assigneeAutoComplete name="assignee" optionLabel="name" [suggestions]="assignToSuggestions"
+                    placeholder="Team or Team Member" (completeMethod)="fetchAssignToSuggestions($event)"
+                    [dropdown]="true" [forceSelection]="true" formControlName="assignee"  emptyMessage="No results found"
+                    (onClear)="onTypeaheadClear(['assignToList', i, 'assignee'], assigneeAutoComplete)"
+                    [style]="{'width':'100%'}" field="name" (onDropdownClick)="dropdownAssignToSuggestions($event)" appendTo="body"></p-autoComplete>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <span [ngClass]="{'invalid': isTouchedAndInvalid(['assignToList', i, 'assignee'])}">
+                    {{formAssignToArray?.get([i, 'assignee'])?.value?.name || "Select Team or Team Member"}}
+                    <span [ngClass]="{ 'icon-Triangle_Down_Solid' : (formAssignToArray?.get([i, 'assignee'])?.invalid)}" class="pull-right"></span>
+                  </span>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn (click)="onEditCellClick(roleTypeCell)" title="{{formAssignToArray?.get([i, 'roleType'])?.value?.name || 'Select User Role'}}">
+              <p-cellEditor #roleTypeCell>
+                <ng-template pTemplate="input">
+                  <p-autoComplete #roleTypeAutoComplete name="assignedRole" [suggestions]="userRoleSuggestions" placeholder="User Role"
+                    (completeMethod)="filterRoleOptions($event)" [dropdown]="true" [forceSelection]="true"
+                    formControlName="roleType" field="name" [style]="{'width':'100%'}" emptyMessage="No results found"
+                    (onClear)="onTypeaheadClear(['assignToList', i, 'roleType'], roleTypeAutoComplete)"
+                    (onDropdownClick)="dropdownRoleOptions($event)"  appendTo="body">
+                  </p-autoComplete>
+                </ng-template>
+                <ng-template pTemplate="output">
+                    <span [ngClass]="{'invalid': isTouchedAndInvalid(['assignToList', i, 'roleType'])}">
+                      {{formAssignToArray?.get([i, 'roleType'])?.value?.name || "Select User Role"}}
+                      <span [ngClass]="{ 'icon-Triangle_Down_Solid' : (formAssignToArray?.get([i, 'roleType'])?.invalid)}" class="pull-right"></span>
+                    </span>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      
+    </div>
+    <div class='data-table'>
+      <p-table [value]="formWorkAssignmentArray.controls" [(selection)]="selectedWorkAssignments" formArrayName="workAssignmentList">
+        <ng-template pTemplate="caption"> Work Assignment
+          <span class="work_info_icon">
+            <span popover="Work Assignment is the way to funnel work down to your employees. 
+                        For Example: John Doe will only see appointments that need to be set for Frito Lay Orders"
+              triggers="mouseenter:mouseleave" placement="top">
+              <i class="icon-jbh_solid-info info_icon_style"></i>
+            </span>
+          </span>
+          <span class="pull-right">
+            <a *ngIf="selectedWorkAssignments.length===0" class="link" (click)='addWorkAssignment()'>Add Work Assignment
+            </a>
+            <a *ngIf="selectedWorkAssignments.length!==0" class="link" (click)='removeWorkAssignments()'>Remove Work
+              Assignment</a>
+          </span>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3em">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th>Type</th>
+            <th>Value</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-workAssignment let-i="rowIndex">
+          <tr [pSelectableRow]="workAssignment" [formGroupName]="i">
+            <td>
+              <p-tableCheckbox [value]="workAssignment"></p-tableCheckbox>
+            </td>
+            <td pEditableColumn (click)="onEditCellClick(typeCell)" title="{{formWorkAssignmentArray?.get([i, 'type'])?.value?.description || 'Select Work Assignment Type'}}">
+              <p-cellEditor #typeCell>
+                <ng-template pTemplate="input">
+                  <p-autoComplete #typeAutoComplete name="assignmentType" placeholder="Type" [style]="{'width': '100%'}"
+                    formControlName="type" [inputStyle]="{'width': '100%'}" emptyMessage="No results found"
+                    [suggestions]="filteredTypeOptions" (completeMethod)="searchAssignmentTypes($event)"
+                    (onClear)="onTypeaheadClear(['workAssignmentList', i, 'type'], typeAutoComplete)"
+                    [forceSelection]="true" [dropdown]="true" (onSelect)="taskResponsibilityTypeChange($event, workAssignment)"
+                    field="description" appendTo="body">
+                  </p-autoComplete>
+                </ng-template>
+                <ng-template pTemplate="output">
+                    <span [ngClass]="{'invalid': isTouchedAndInvalid(['workAssignmentList', i, 'type'])}">
+                      {{formWorkAssignmentArray?.get([i, 'type'])?.value?.description || "Select Work Assignment Type"}}
+                      <span [ngClass]="{ 'icon-Triangle_Down_Solid' : formWorkAssignmentArray?.get([i, 'type'])?.invalid}" class="pull-right"></span>
+                    </span>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn (click)="onEditCellClick(valueCell)" title="{{formWorkAssignmentArray?.get([i, 'value'])?.value?.label || 'Select Value'}}">
+              <p-cellEditor #valueCell>
+                <ng-template pTemplate="input">
+                  <p-autoComplete *ngIf="!!workAssignment?.type?.service"
+                    #valueAutoComplete name="assignmentValue" placeholder="Value" [style]="{'width': '100%'}"
+                    formControlName="value" [inputStyle]="{'width': '100%'}"
+                    (onClear)="onTypeaheadClear(['workAssignmentList', i, 'value'], valueAutoComplete)"
+                    [suggestions]="workAssignment.filteredOptions" (completeMethod)="searchForOptions($event, workAssignment)" 
+                    [forceSelection]="true" emptyMessage="No results found"
+                    [dropdown]="workAssignment?.type?.dropdown" field="label" appendTo="body">
+                  </p-autoComplete>
+                  <input *ngIf="!workAssignment?.type?.service" #valueTextInput (keydown.enter)="valueEntered(valueTextInput, workAssignment)"
+                  type="text" pInputText class="full-width" (blur)="valueEntered(valueTextInput, workAssignment)" [value]="workAssignment?.value?.value?.label||''">
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <span [ngClass]="{'invalid': isTouchedAndInvalid(['workAssignmentList', i, 'value'])}">
+                    {{formWorkAssignmentArray?.get([i, 'value'])?.value?.label || "Select Value"}}
+                    <span [ngClass]="{ 'icon-Triangle_Down_Solid' : formWorkAssignmentArray?.get([i, 'value'])?.invalid}" class="pull-right"></span>
+                  </span>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </form>
+  <p-footer>
+    <div class="pull-right ui-g">
+      <p-button label="Cancel" styleClass="{{task?.taskAssignmentStatus==='Active' ? 'ui-button-tertiary' : 'ui-button-secondary'}}" (click)='confirmChanges()'></p-button>
+      <ng-container *ngIf="task?.taskAssignmentStatus==='Active'">
+          <p-button label="Remove Task Assignment" styleClass="ui-button-secondary" (click)='confirmRemoveAssignment()'>
+          </p-button>
+      </ng-container>
+      <p-button (click)="onSubmit()" label="{{updating? 'Save' : 'Create'}}" styleClass="ui-button-primary"></p-button>
+    </div>
+  </p-footer>
+  <ng-template #infoIconTemplate>
+    <span class="work_info_icon">
+      <span popover="Work Assignment is the way to funnel work down to your employees. 
+                For Example: John Doe will only see appointments that need to be set for Frito Lay Orders"
+        triggers="mouseenter:mouseleave" placement="top">
+        <span class="icon-jbh_solid-info info_icon_style"></span>
+      </span>
+    </span>
+  </ng-template>
+</p-panel>

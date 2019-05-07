@@ -1,0 +1,134 @@
+<div class="ui-g">
+  <filter-panel *ngIf="displayFilterPanel && !displayRightPanel" class="ui-g-2"
+    [filters]="filters"
+    [filter-state]="activeFilters"
+    (onFilterChange)="onFilterChange( $event )">
+  </filter-panel>
+
+  <p-table
+    #dataPanelTable
+    [columns]="columns"
+    [value]="values"
+    selectionMode="single"
+    [(selection)]="selectedRow"
+    (onRowSelect)="onRowSelect($event)"
+    [paginator]="false"
+    [rows]="rowsPerPage"
+    [scrollable]="true"
+    [totalRecords]="totalRecords"
+    [rowsPerPageOptions]="[10,25,50,100]"
+    [lazy]="true"
+    [loading]="loading"
+    [ngClass]="{'ui-g-12': !displayFilterPanel && !displayRightPanel, 'ui-g-10': displayFilterPanel && !displayRightPanel, 'ui-g-6': displayRightPanel}"
+    class="top-table"
+    >
+    <ng-template pTemplate="caption">
+      <span class="h2">{{dataPanelTitle}}</span>
+      <div class="header-right" *ngIf="!displayRightPanel">
+        <div class="ui-inputgroup">
+          <span class="ui-inputgroup-addon"><i class="icon-Search"></i></span>
+          <input
+            type="text"
+            placeholder="Search"
+            pInputText
+            [ngModel]="searchTerm"
+            (ngModelChange)="searchChangeHandler.emit($event)"
+          />
+        </div>
+        <div class="caption-button filter-button" (click)="onFilterButtonClick()">
+          <i class="icon-Filter_Solid"></i>
+        </div>
+        <div class="caption-button" (click)="overflowMenuUI.toggle($event)" *ngIf="overflowMenu">
+          <p-menu #overflowMenuUI [popup]="true" [model]="overflowMenu" appendTo="body" [styleClass]="'data-panel-overflow-menu'"></p-menu>
+          <i class="icon-Menu_Overflow"></i>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngIf="hasCheckboxes" class="checkbox-cell" (click)="headCheckboxClicked($event, headCB)">
+          <div class="ui-chkbox ui-widget">
+            <div class="ui-helper-hidden-accessible">
+                <input #headCB type="checkbox" (change)="headCheckboxChanged($event)" [checked]="headCheckbox.checked" (focus)="headCheckboxFocused()"
+                        (blur)="headCheckboxBlurred()" [ngClass]="{'ui-state-focus':headCheckbox.focused}">
+            </div>
+            <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default"
+                  [ngClass]="{'ui-state-active': headCheckbox.checked, 'ui-state-focus': headCheckbox.focused}">
+              <span class="ui-chkbox-icon ui-clickable" [ngClass]="{'pi pi-check': headCheckbox.checked}"></span>
+            </div>
+          </div>
+        </th>
+        <ng-container *ngFor="let col of columns">
+          <th
+            *ngIf="col.sortable"
+            class="sort-header h5"
+            [ngStyle]="col.style ? col.style : {}"
+            (click)="onColumnSelect(col.field)">
+            <div class="header-container">
+              {{ col.header }}
+              <ng-container *ngIf="selectedColumn.columnName === col.field">
+                <i *ngIf="selectedColumn.direction === 'asc'" class="fa fa-sort-up"></i>
+                <i *ngIf="selectedColumn.direction === 'desc'" class="fa fa-sort-down"></i>
+              </ng-container>
+              <ng-container *ngIf="selectedColumn.columnName !== col.field">
+                  <i class="fa fa-sort"></i>
+              </ng-container>
+            </div>
+          </th>
+          <th
+            *ngIf="!col.sortable"
+            class="h5"
+            [ngStyle]="col.style ? col.style : {}">
+            {{ col.header }}
+          </th>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-val>
+      <tr [pSelectableRow]="val" class="data-panel-row">
+        <td *ngIf="hasCheckboxes" class="checkbox-cell" (click)="checkBoxClicked($event, val, cb)">
+          <div class="ui-chkbox ui-widget">
+            <div class="ui-helper-hidden-accessible">
+                <input #cb type="checkbox" (change)="checkBoxChanged($event, val)" [checked]="val.checked" (focus)="checkBoxFocused(val)"
+                        (blur)="checkBoxBlurred(val)" [ngClass]="{'ui-state-focus':val.focused}">
+            </div>
+            <div class="ui-chkbox-box ui-widget ui-corner-all ui-state-default" (click)="checkBoxClicked($event, val, cb)"
+                  [ngClass]="{'ui-state-active': val.checked, 'ui-state-focus': val.focused}">
+              <span class="ui-chkbox-icon ui-clickable" [ngClass]="{'pi pi-check': val.checked}"></span>
+            </div>
+          </div>
+        </td>
+        <td *ngFor="let col of columns" [ngStyle]="col.style ? col.style : {}" title="{{buildTitleForTd(val[col.field])}}">
+          <ng-container *ngIf="!col.isList">{{val[col.field]}}</ng-container>
+          <ng-container *ngIf="col.isList && val[col.field]">
+            <div class="html-container" [innerHTML]="val[col.field].join('<br>')"></div>
+          </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <p-paginator
+        #paginator
+        [first]="firstRow"
+        [rows]="rowsPerPage"
+        [totalRecords]="totalRecords"
+        [rowsPerPageOptions]="[10,25,50,100]"
+        (onPageChange)="onPageChange($event)">
+      </p-paginator>
+      <div class="pull-right ui-g" *ngIf="!displayRightPanel">
+        <ng-container *ngFor="let button of buttons">
+          <p-button
+            class="data-panel-button"
+            *ngIf="!button.hide"
+            styleClass="{{button.style}}"
+            label="{{button.label}}"
+            (onClick)=button.click($event)>
+          </p-button>
+        </ng-container>
+      </div>
+    </ng-template>
+  </p-table>
+  <div *ngIf="displayRightPanel" class="ui-g-6 data-panel-right">
+    <ng-content select="data-panel-right" ></ng-content>
+  </div>
+</div>

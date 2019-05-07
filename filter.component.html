@@ -1,0 +1,61 @@
+<ng-container [ngSwitch]="filter.type">
+  <div class="filter-container" *ngSwitchCase="'CHECKBOX'">
+    <ng-container *ngIf="filter.options.length > 5 || filter.showSearchOverride">
+      <p-autoComplete 
+        [(ngModel)]="filter.searchText" 
+        [suggestions]="filter.suggestions"
+        (completeMethod)="filter.search($event)"
+        [dropdown]="true"
+        (onSelect)="filter.searchSelected($event, onFilterChange)"
+        styleClass="filter-autocomplete">
+      </p-autoComplete>
+    </ng-container>
+    <div class="checkbox-container">
+      <ng-container *ngIf="0 < filter.options.length < 10">
+        <ng-container *ngFor="let option of filter.options">
+          <p-checkbox
+            [name]="filter.field" 
+            [value]="option.value"
+            [label]="option.label"
+            [(ngModel)]="filter.model" 
+            (click)="optionClick.emit(filter)"
+          ></p-checkbox>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="filter.options.length >= 10 || filter.options.length == 0">
+        <ng-container *ngFor="let option of filter.selectedSearches">
+          <p-checkbox
+            [name]="filter.field" 
+            [value]="option" 
+            [label]="option" 
+            [(ngModel)]="filter.model" 
+            (click)="optionClick.emit(filter)"
+          ></p-checkbox>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+  <div class="filter-container" *ngSwitchCase="'ELASTIC'">
+    <p-autoComplete
+      #searchBox
+      [(ngModel)]="filter.searchText" 
+      [suggestions]="suggestions"
+      (completeMethod)="filter.search($event)"
+      [dropdown]="true"
+      dropdownMode="current"
+      (onSelect)="filter.searchSelected($event, optionClick, searchBox)"
+      styleClass="filter-autocomplete">
+    </p-autoComplete>
+    <div class="checkbox-container">
+      <ng-container *ngFor="let option of filter.selectedSearches">
+        <p-checkbox
+          [name]="filter.field" 
+          [value]="option" 
+          [label]="option" 
+          [(ngModel)]="filter.model" 
+          (click)="optionClick.emit(filter)"
+        ></p-checkbox>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

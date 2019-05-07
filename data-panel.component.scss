@@ -1,0 +1,122 @@
+.top-table {
+  display: flex;
+  flex-direction: column;
+}
+
+p-table ::ng-deep .ui-table {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  .ui-table-caption {
+    border-bottom: rgba(200, 200, 200, 0.2) solid 1px;
+  }
+
+  .ui-table-summary {
+    border-top: rgba(200, 200, 200, 0.2) solid 1px;
+  }
+
+  .ui-table-scrollable-wrapper {
+    display: flex;
+    flex: auto;
+    min-height: 0;
+
+    .ui-table-scrollable-view {
+      display: flex;
+      flex-direction: column;
+      flex: auto;
+      min-height: 0;
+
+      .ui-table-scrollable-header {
+        overflow: visible;
+      }
+    }
+  }
+}
+
+.checkbox-cell {
+  width: 16px;
+  padding: 4px 8px;
+  padding-left: 8px !important;
+  padding-bottom: 4px !important;
+  cursor: pointer;
+
+  .ui-chkbox {
+    margin-right: unset;
+  }
+}
+
+th {
+  padding-bottom: 10px !important;
+}
+
+.ui-g {
+  flex-wrap: nowrap;
+}
+
+.data-panel-row {
+  cursor: pointer;
+}
+
+filter-panel {
+  padding-right: 1em;
+}
+
+.html-container {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.data-panel-right {
+  padding-left: 1em;
+  display: flex;
+}
+
+.header-right {
+  float: right;
+  display: flex;
+
+  .caption-button {
+    color: #007dba;
+    cursor: pointer;
+  }
+
+  .filter-button {
+    padding-right: 13px;
+  }
+}
+
+.ui-inputgroup {
+  padding: 0 13px;
+}
+
+.data-panel-button {
+  padding-left: 15px;
+}
+
+p-paginator {
+  float: left;
+
+  ::ng-deep .ui-paginator {
+    padding: unset;
+    line-height: 25px;
+  }
+
+  ::ng-deep .ui-paginator-element .fa {
+    margin-top: unset;
+  }
+}
+
+.sort-header {
+  cursor: pointer;
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    i {
+      color: #007dba;
+    }
+  }
+}

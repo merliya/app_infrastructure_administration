@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="errorHeader">
+        <i class="{{error.icon}} error-icon"></i>
+        <div class="errorText">
+            <div class="ui-g">
+                <div class="ui-g-12 errorTextContainer">
+                    <span class="display1 errorText">{{error.title}}</span>
+                    <h5 class="errorText">{{error.explanation}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+  <div class="errorMain">
+      <ng-container *ngTemplateOutlet="error?.template"></ng-container>
+  </div>
+</div>
+
+<ng-template #notFound>
+    <h5>Where would you like to go?</h5>
+    <div class="btn-div">
+         <button type="button" label="Back" (click)="back()" class="error-ui-button error-ui-button-secondary">
+             <span class="error-ui-button-text">Back</span>
+         </button>
+         <button type="button" label="Home" routerLink="/home" routerLinkActive="active" class="error-ui-button error-ui-button-primary">
+                <span class="error-ui-button-text" >Home</span>
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #notAutorized>
+    <h5>Call to Request Access</h5>
+    <div class="errorCall">
+        <h4><i class="icon-Contact_Phone"></i>1-800-452-4868</h4>
+    </div>
+</ng-template>

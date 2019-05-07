@@ -1,0 +1,95 @@
+.header-right {
+    float: right;
+}
+
+.right-header-link {
+    line-height: 60px;
+}
+
+.time-picker {
+    max-width: 140px;
+}
+
+.link {
+    cursor: pointer;
+}
+
+.empty-delegation-calendar {
+    padding-right: 2px;
+}
+
+.empty-delegation-time {
+    padding-left: 2px;
+}
+
+.empt-delegation-row {
+    background-color: #c9c9c9;
+}
+
+p-calendar ::ng-deep {
+    .ui-datepicker-timeonly {
+        width: 140px;
+    }
+
+    .ui-inputtext {
+        font-size: 0.8rem;
+    }
+
+    table {
+        tbody {
+            tr {
+                &:nth-child(odd){
+                    background-color: unset;
+                }
+                &:hover {
+                    background-color: unset !important;
+                }
+                td {
+                    padding-right: unset;
+                    overflow: unset;
+                    text-overflow: unset;
+
+                    &:first-child{
+                        padding-left: unset;
+                    }
+
+                    &:hover {
+                        background-color: #00AAFC;
+                    }
+                }
+            }
+        }
+        thead {
+            tr {
+                th {
+                    padding-right: unset;
+                    overflow: unset;
+                    text-overflow: unset;
+
+                    &:first-child {
+                        padding-left: unset !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+p-table ::ng-deep {
+    table {
+        overflow: unset !important;
+
+        tbody {
+            td {
+                overflow: unset !important;
+            }
+        }
+
+        tfoot {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            td {
+                overflow: unset !important;
+            }
+        }
+    }
+}

@@ -1,0 +1,60 @@
+.table-cell {
+  padding-top: unset;
+  padding-bottom: unset;
+  height: 2rem;
+}
+
+.invalid {
+  color: #cc2d24;
+}
+
+.buttons-column {
+  width: 50%;
+}
+.double-time-column {
+  width: 32%;
+}
+
+.time-column {
+  width: 16%;
+}
+
+.day-column {
+  width: 18%;
+}
+
+.add-button {
+  color: #007DBA;
+}
+
+.remove-button {
+  color: #CC2D24;
+  padding-right: 10px;
+}
+
+p-dialog {
+  ::ng-deep  .ui-dialog {
+    width: 900px;
+    min-width: 200px;
+    min-height: 150px;
+    z-index: 11031;
+    visibility: visible;
+    left: 610px;
+    top: 120px;
+    display: block;
+    transform: none;
+    opacity: 1;
+  }
+  ::ng-deep .ui-dialog-content {
+    height: 390px;
+  }
+}
+
+p-message {
+  display: flex;
+  justify-content: flex-start;
+
+  .ui-message {
+    padding-left: 0px;
+  }
+}

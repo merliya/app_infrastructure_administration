@@ -1,0 +1,100 @@
+<div class="container">
+  <h1>User Management</h1>
+  <shared-data-panel
+  *ngIf="!fullscreen"
+  panel-title="Users"
+  [values]="values"
+  [columns]="columns"
+  [filters]="filters"
+  [total-records]="totalRecords"
+  [rows-per-page]="tableSize"
+  [first-row]="firstRecord"
+  [search-state]="mostRecentSearch"
+  [filter-state]="activeFilters"
+  [right-panel-helper]="rightPanelHelper"
+  (onRowSelect)="onRowSelect($event)"
+  (onPageChange)="onPageChange($event)"
+  (onSearch)="onSearch($event)"
+  (onFilter)="onFilter($event)">
+    <data-panel-right>
+      <p-panel>
+        <p-header>
+          <span class="h2">User Details</span>
+          <div class="pull-right ui-g">
+            <div class="panel-button" (click)="goToFullscreen()">
+              <i class="icon-User_Profile_Solid"></i>
+            </div>
+            <div class="panel-button" (click)="cancel()">
+              <i class="icon-Menu_Close"></i>
+            </div>
+          </div>
+        </p-header>
+        <ng-container *ngTemplateOutlet="userPanel"></ng-container>
+        <p-footer>
+          <div class="pull-right ui-g">
+            <p-button label="Cancel" styleClass="ui-button-secondary" (click)="cancel()"></p-button>
+            <p-button label="Save" styleClass="ui-button-primary" (click)="saveUser()"></p-button>
+          </div>
+        </p-footer>
+      </p-panel>
+    </data-panel-right>
+  </shared-data-panel>
+  <ng-container *ngIf="fullscreen">
+    <ng-container *ngTemplateOutlet="userPanel"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #userPanel>
+  <div *ngIf="userPanelIsLoading" class="loading-overlay">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <div class="ui-g-12" [ngClass]="{'ui-md-6': !fullscreen, 'ui-md-3': fullscreen}">
+        <img class="user-image" alt="User Image" [src]="selectedEmp?.profilePic ? selectedEmp?.profilePic : 'assets/images/nouser.png'" >
+        <span class="employee-name">{{selectedEmp?.fullName}}</span><br>
+        <span class="employee-title">{{selectedEmp?.title}}</span><br>
+        <div class="contact-icons">
+          <a href="mailto:{{selectedEmp?.email}}">
+            <i class="icon-Contact_Mail"></i>
+          </a>
+          <a href="skype:{{selectedEmp?.email}}?call">
+            <i class="icon-Device_Smartphone"></i>
+          </a>
+          <a href="skype:?chat">
+            <i class="icon-Social_Skype"></i>
+          </a>
+        </div>
+      </div>
+      <div class="ui-g-12" [ngClass]="{'ui-md-6': !fullscreen, 'ui-md-3': fullscreen}">
+        <span class="field-label">Username</span><span class="field-value">{{selectedEmp?.userName}}</span><br>
+        <span class="field-label">Email</span><span class="field-value"><a href="mailto:{{selectedEmp?.email}}">{{selectedEmp?.email}}</a></span><br>
+        <span class="field-label">Phone</span><span class="field-value">{{selectedEmp?.phone | phoneNumber}}</span><br>
+      </div>
+    </div>
+    <div class="ui-g-12 manager-block">
+      <span class="h5">Manager</span><br>
+      <div class="ui-g-12" [ngClass]="{'ui-md-6': !fullscreen, 'ui-md-3': fullscreen}">
+        <span class="field-label">Name</span><span class="field-value">{{selectedEmp?.manager?.fullName}}</span><br>
+        <span class="field-label">Username</span><span class="field-value">{{selectedEmp?.manager?.userName}}</span><br>
+      </div>
+      <div class="ui-g-12" [ngClass]="{'ui-md-6': !fullscreen, 'ui-md-3': fullscreen}">
+        <span class="field-label">Email</span><span class="field-value"><a href="mailto:{{selectedEmp?.manager?.email}}">{{selectedEmp?.manager?.email}}</a></span><br>
+        <span class="field-label">Phone</span><span class="field-value">{{selectedEmp?.manager?.phone | phoneNumber}}</span><br>
+      </div>
+    </div>
+    <admin-employee-schedule
+      class="ui-g-12 right-inner-panel"
+      [schedule]="schedule"
+      [fullscreen]="fullscreen"
+      (saved)="onSaved()">
+    </admin-employee-schedule>
+    <admin-employee-task-delegation
+      class="ui-g-12 right-inner-panel"
+      [delegations]="delegations"
+      [fullscreen]="fullscreen"
+      [teams]="selectedEmp?.teams"
+      [employee-id]="selectedEmplId" >
+    </admin-employee-task-delegation>
+  </div>
+</ng-template>

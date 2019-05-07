@@ -1,0 +1,69 @@
+.full-width{
+  width: 100% !important;
+}
+
+.link{
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.full-text-input {
+  width: 100% !important;
+  margin-top: 25px;
+}
+
+.left-text-input {
+  width: 100% !important;
+  margin-top: 20px;
+  margin-right: 25px;
+}
+
+i {
+  cursor: pointer;
+  color: #007dba;
+
+}
+.solid-icon {
+  
+  font-size: 16px;
+  margin-right:10px;
+  
+}
+
+.minus-icon {
+  color: red;
+  margin: 2px;
+}
+
+.plus-icon {
+  font-size: 10px;
+  margin-right:4px;
+}
+
+.member-table {
+  margin-top: 25px;
+}
+
+.remove-column {
+  border-left: none !important;
+  width: 10px !important;
+  text-align: center;
+}
+
+.team-name-span {
+  padding-right: 10px;
+}
+
+th {
+  font-weight: bold;
+  font-size: 14px;
+}
+p-footer {
+  p-button {
+      margin-left: 10px;
+  }
+}
+
+.invalid {
+  color: #cc2d24 !important;
+}

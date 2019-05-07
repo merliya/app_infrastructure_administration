@@ -1,0 +1,162 @@
+<p-dialog
+  #dialog
+  [(visible)]="display"
+  header="Update Schedule"
+  [dismissableMask]="true"
+  [modal]="true"
+>
+  <form>
+    <p-table
+      [value]="scheduleList.value"
+      [scrollable]="true"
+      (onEditInit)="onEditInit($event)"
+      (onEditComplete)="onEditComplete()"
+    >
+      <ng-template pTemplate="caption">
+        Available Days and Times
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="day-column">Day</th>
+          <th [attr.colSpan]="2">Time</th>
+          <th class="buttons-column"></th>
+        </tr>
+        <tr>
+          <th class="day-column"></th>
+          <th class="time-column">Start Time</th>
+          <th class="time-column">End Time</th>
+          <th class="buttons-column"></th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-row
+        let-rowIndex="rowIndex"
+      >
+        <tr>
+          <td
+            [pEditableColumn]="rowIndex"
+            [pEditableColumnField]="'day'"
+            class="table-cell day-column"
+          >
+            <p-cellEditor>
+              <ng-template pTemplate="output">
+                <span [ngClass]="{'invalid': isTouchedAndInvalid(['scheduleList', rowIndex, 'day'])}">
+                  {{displayFriendlyDay(scheduleList?.get([rowIndex, 'day'])?.value) || 'Select a day'}}
+                  <span class="icon-Triangle_Down_Solid pull-right"></span>
+                </span>
+              </ng-template>
+              <ng-template pTemplate="input">
+                <p-dropdown
+                  appendTo="body"
+                  name="dayDropdown"
+                  placeholder="Select a day"
+                  [options]="days"
+                  [autoDisplayFirst]="false"
+                  [style]="{'width': '100%', 'border-radius': 'unset', 'line-height': 'unset'}"
+                  (onChange)="onDropdownChange($event)"
+                  [(ngModel)]="scheduleList.get([rowIndex, 'day']).value"
+                ></p-dropdown>
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td
+            [pEditableColumn]="rowIndex"
+            [pEditableColumnField]="'startTime'"
+            class="table-cell time-column"
+          >
+            <p-cellEditor>
+              <ng-template pTemplate="output">
+                <span [ngClass]="{'invalid': isTouchedAndInvalid(['scheduleList', rowIndex, 'startTime'])}">
+                  {{displayFriendlyTime(scheduleList?.get([rowIndex, 'startTime'])?.value) || 'hh:mm'}}
+                </span>
+                <p-message
+                  *ngIf="isTouchedAndInvalid(['scheduleList', rowIndex, 'startTime'])"
+                  severity="error"
+                  text="Enter valid Start Time"
+                ></p-message>
+              </ng-template>
+              <ng-template pTemplate="input">
+                <p-calendar
+                  appendTo="body"
+                  name="startTime"
+                  showTime="true"
+                  hourFormat="24"
+                  [timeOnly]="true"
+                  (onSelect)="onTimeSelect($event)"
+                  (onInput)="onTimeInput($event)"
+                  (onClose)="onCalendarClose()"
+                  [(ngModel)]="scheduleList.get([rowIndex, 'startTime']).value"
+                ></p-calendar>
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td
+            [pEditableColumn]="rowIndex"
+            [pEditableColumnField]="'endTime'"
+            class="table-cell time-column"
+          >
+            <p-cellEditor>
+              <ng-template pTemplate="output">
+                <div [ngClass]="{'invalid': isTouchedAndInvalid(['scheduleList', rowIndex, 'endTime'])}">
+                  {{displayFriendlyTime(scheduleList?.get([rowIndex, 'endTime'])?.value) || 'hh:mm'}}
+                </div>
+                <p-message
+                  *ngIf="isTouchedAndInvalid(['scheduleList', rowIndex, 'endTime'])"
+                  severity="error"
+                  text="Enter valid End Time"
+                ></p-message>
+              </ng-template>
+              <ng-template pTemplate="input">
+                <p-calendar
+                  appendTo="body"
+                  name="endTime"
+                  showTime="true"
+                  hourFormat="24"
+                  [timeOnly]="true"
+                  (onSelect)="onTimeSelect($event)"
+                  (onInput)="onTimeInput($event)"
+                  (onClose)="onCalendarClose()"
+                  [(ngModel)]="scheduleList.get([rowIndex, 'endTime']).value"
+                ></p-calendar>
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td class="buttons-column table-cell">
+            <i
+              (click)="addRow(rowIndex)"
+              class="icon-Circle_Add_Solid add-button pull-right"
+            ></i>
+            <i
+              (click)="removeRow(rowIndex)"
+              *ngIf="scheduleList.length > 1"
+              class="icon-Circle_Remove_Solid remove-button pull-right"
+            ></i>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </form>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      (click)="clearForm()"
+      label="Clear Schedule"
+      class="ui-button-tertiary"
+    ></button>
+    <button
+      type="button"
+      pButton
+      (click)="cancel()"
+      label="Cancel"
+      class="ui-button-secondary"
+    ></button>
+    <button
+      type="button"
+      pButton
+      (click)="save()"
+      label="Save"
+    ></button>
+  </p-footer>
+</p-dialog>

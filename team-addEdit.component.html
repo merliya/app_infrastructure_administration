@@ -1,0 +1,176 @@
+<p-panel>
+  <p-header>
+    <span class="h2">{{ mode === 'edit' ? 'Team Details' : 'Add Team' }}</span>
+    <div class="pull-right ui-g">
+      <div class="panel-button">
+        <i class="icon-User_Group_Solid solid-icon" aria-hidden="true"></i>
+        <i class="icon-Menu_Close" aria-hidden="true" (click)="onClose()"></i>
+      </div>
+    </div>
+  </p-header>
+  <div *ngIf="loading" class="loading-overlay">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+  <form novalidate [formGroup]="teamForm">
+    <div class="ui-g">
+      <div class="ui-g-6">
+        <span class="ui-float-label full-width team-name-span">
+          <input
+            pInputText
+            type="text"
+            name="teamName"
+            formControlName="teamName"
+            class="full-width form-content-input"
+          />
+          <label for="teamName">Team Name</label>
+        </span>
+        <div *ngIf="isTouchedAndInvalid('teamName')">
+          <p-message
+            severity="error"
+            text="Please enter a team name."
+            *ngIf="teamForm.get('teamName').errors.required"
+          >
+          </p-message>
+          <p-message
+            severity="error"
+            text="Team name should be less than 120 characters."
+            *ngIf="teamForm.get('teamName').errors.maxlength"
+          >
+          </p-message>
+        </div>
+      </div>
+      <div class="ui-g-6">
+        <span class="ui-float-label full-width">
+          <p-autoComplete
+            #teamLeaderAutocomplete
+            formControlName="teamLeader"
+            [dropdown]="true"
+            [forceSelection]="true"
+            (onSelect)="changeLeader()"
+            (onClear)="
+              onAutocompleteClear('teamLeader', teamLeaderAutocomplete)
+            "
+            [suggestions]="employeeSuggestions"
+            [emptyMessage]="
+              employeeSuggestions && employeeSuggestions.length > 0
+                ? null
+                : 'No Result Found'
+            "
+            (completeMethod)="onSearch($event)"
+            field="nameAndUsername"
+            [style]="{ width: '100%' }"
+            [inputStyle]="{ width: '100%' }"
+          >
+          </p-autoComplete>
+          <label for="teamLeader">Team Leader</label>
+        </span>
+        <p-message
+          severity="error"
+          text="Please enter a team leader"
+          *ngIf="isTouchedAndInvalid('teamLeader')"
+        >
+        </p-message>
+      </div>
+    </div>
+    <div class="member-table">
+      <p-table
+        width="100%"
+        formArrayName="teamMemberList"
+        [value]="teamMemberListToArray.controls"
+      >
+        <ng-template pTemplate="caption">
+          Team Members
+          <span class="pull-right">
+            <i
+              class="icon-Circle_Add_Solid add-icon plus-icon"
+              aria-hidden="true"
+            ></i>
+            <a class="link" (click)="addMember()">Add Team Member</a>
+          </span>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th class="remove-column"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-member let-i="rowIndex">
+          <tr [formGroupName]="i" style="height:25px">
+            <td
+              pEditableColumn
+              title="{{
+                teamMemberListToArray?.get([i, 'memberInfo'])?.value
+                  ?.fullMemberInfo || 'Select a team member'
+              }}"
+            >
+              <p-cellEditor
+                #teamMember
+                [ngClass]="{
+                  invalid:
+                    teamMemberListToArray?.get([i, 'memberInfo']).invalid &&
+                    teamMemberListToArray?.get([i, 'memberInfo']).touched
+                }"
+              >
+                <ng-template pTemplate="input">
+                  <p-autoComplete
+                    formControlName="memberInfo"
+                    [dropdown]="true"
+                    [forceSelection]="true"
+                    [suggestions]="filteredEmployeeSuggestions"
+                    [emptyMessage]="
+                      filteredEmployeeSuggestions &&
+                      filteredEmployeeSuggestions.length > 0
+                        ? null
+                        : 'No Result Found'
+                    "
+                    (completeMethod)="onFilteredSearch($event)"
+                    (onSelect)="teamMemberSelected($event)"
+                    placeholder="Select Team Member"
+                    field="fullMemberInfo"
+                    [style]="{ width: '100%' }"
+                    [inputStyle]="{ width: '100%' }"
+                    appendTo="body"
+                  >
+                  </p-autoComplete>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{
+                    teamMemberListToArray?.get([i, 'memberInfo'])?.value
+                      ?.fullMemberInfo || 'Select a team member'
+                  }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td class="remove-column">
+              <i
+                class="icon-Circle_Remove_Solid minus-icon"
+                aria-hidden="true"
+                (click)="removeMember(i)"
+              ></i>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </form>
+  <p-footer>
+    <div class="pull-right ui-g">
+      <p-button
+        label="Cancel"
+        styleClass="ui-button-tertiary"
+        (click)="onClose()"
+      ></p-button>
+      <p-button
+        *ngIf="inEdit()"
+        label="Inactivate Team"
+        styleClass="ui-button-secondary"
+        (click)="onInactivate()"
+      ></p-button>
+      <p-button
+        label="Save"
+        styleClass="ui-button-primary"
+        (click)="onSave()"
+      ></p-button>
+    </div>
+  </p-footer>
+</p-panel>

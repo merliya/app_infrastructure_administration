@@ -1,0 +1,117 @@
+<p-panel class="ui-g-12 right-inner-panel">
+  <p-header class="h3">
+    Temporary Task Delegation
+    <div class="pull-right right-header-link body2" *ngIf="!fullscreen">
+      <a class="link" (click)="addNewDelegation()">Add Delegation</a>
+    </div>
+  </p-header>
+  <p-table [value]="rows" [formGroup]="newDelegationsForm">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          Start Date, Time
+        </th>
+        <th>
+          End Date, Time
+        </th>
+        <th>
+          Contact
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <ng-container  *ngIf="isDelegation(row)">
+        <tr>
+          <td>
+            {{row.start | date:'short'}}
+          </td>
+          <td>
+            {{row.end | date:'short'}}
+          </td>
+          <td>
+            {{row.delegee.firstName}} {{row.delegee.lastName}}
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!isDelegation(row)" formArrayName="newDelegations">
+          <tr *ngFor="let newDelegation of newDelegations.controls; let i=index">
+              <ng-container [formGroupName]="i">
+                <td #newStartDateTime>
+                  <p-calendar
+                    appendTo="body"
+                    name="newStartDateField"
+                    class="ui-g-6 empty-delegation-calendar"
+                    formControlName="startDate"
+                    icon="icon-Calendar"
+                    placeholder="Date"
+                    [inputStyle]="{'width': '100%'}"
+                    [minDate]="rightNow"
+                    [showIcon]="true"
+                    [selectOtherMonths]="true"
+                    [style]="{'width':'100%'}"
+                    (onFocus)="focusOnDateTime( newDelegation.get('startDate') )"
+                  ></p-calendar>
+                  <p-calendar
+                    class="ui-g-6 empty-delegation-time"
+                    appendTo="body"
+                    formControlName="startTime"
+                    icon="icon-Circle_Clock"
+                    placeholder="Time"
+                    hourFormat="24"
+                    [inputStyle]="{'width': '100%'}"
+                    [showIcon]="true"
+                    [showTime]="true"
+                    [style]="{'width': '100%'}"
+                    [timeOnly]="true"
+                    (onFocus)="focusOnDateTime( newDelegation.get('startTime') )"
+                  ></p-calendar>
+                </td>
+                <td #newEndDateTime>
+                  <p-calendar
+                    appendTo="body"
+                    class="ui-g-6 empty-delegation-calendar"
+                    formControlName="endDate"
+                    icon="icon-Calendar"
+                    placeholder="Date"
+                    [inputStyle]="{'width': '100%'}"
+                    [minDate]="newDelegation.get('startDate')?.value"
+                    [selectOtherMonths]="true"
+                    [showIcon]="true"
+                    [style]="{'width':'100%'}"
+                    (onFocus)="focusOnDateTime( newDelegation.get('endDate'), newDelegation.get('startDate') )"
+                  ></p-calendar>
+                  <p-calendar
+                    appendTo="body"
+                    class="ui-g-6 empty-delegation-time"
+                    formControlName="endTime"
+                    hourFormat="24"
+                    icon="icon-Circle_Clock"
+                    placeholder="Time"
+                    [inputStyle]="{'width': '100%'}"
+                    [showTime]="true"
+                    [timeOnly]="true"
+                    [showIcon]="true"
+                    [style]="{'width': '100%'}"
+                    (onFocus)="focusOnDateTime( newDelegation.get('endTime'), newDelegation.get('startTime') )"
+                  ></p-calendar>
+                </td>
+                <td #newContactField>
+                  <p-autoComplete
+                    appendTo="body"
+                    class="ui-g-12"
+                    field="fullNameAndTitle"
+                    formControlName="contact"
+                    [dropdown]="true"
+                    [forceSelection]="true"
+                    [inputStyle]="{'width': '100%'}"
+                    [style]="{'width': '100%'}"
+                    [suggestions]="delegeeSuggestions"
+                    (completeMethod)="searchForDelegees($event)"
+                  ></p-autoComplete>
+                </td>
+              </ng-container>
+          </tr>
+      </ng-container>
+    </ng-template>
+  </p-table>
+</p-panel>

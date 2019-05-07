@@ -1,0 +1,65 @@
+<p-table
+  [value]="scheduleRows"
+  [columns]="cols"
+  class="ui-g-12 right-inner-panel"
+>
+  <ng-template pTemplate="caption">
+    <div class="h3">
+      Schedule
+      <div
+        *ngIf="scheduleRows.length !== 0 && !fullscreen"
+        class="pull-right right-header-link body2"
+      >
+        <a
+          class="link"
+          (click)="showDialog()"
+        >Edit Schedule</a>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template
+    pTemplate="header"
+    let-columns
+  >
+    <tr *ngIf="scheduleRows.length !== 0">
+      <th *ngFor="let col of columns">{{col.header}}</th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-row
+  >
+    <tr>
+      <td class="time-block">{{row.SUNDAY ? row.SUNDAY : '--'}}</td>
+      <td class="time-block">{{row.MONDAY ? row.MONDAY : '--'}}</td>
+      <td class="time-block">{{row.TUESDAY ? row.TUESDAY : '--'}}</td>
+      <td class="time-block">{{row.WEDNESDAY ? row.WEDNESDAY : '--'}}</td>
+      <td class="time-block">{{row.THURSDAY ? row.THURSDAY : '--'}}</td>
+      <td class="time-block">{{row.FRIDAY ? row.FRIDAY : '--'}}</td>
+      <td class="time-block">{{row.SATURDAY ? row.SATURDAY : '--'}}</td>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="emptymessage"
+    let-columns
+  >
+    <tr class="empty-table">
+      <td
+        [attr.colspan]="columns.length"
+        class="empty-table-cell"
+      >
+        Schedule not created yet. Please create a Schedule. <br><br>
+        <button
+          pButton
+          class="ui-button-secondary"
+          (click)="showDialog()"
+        >Create Schedule</button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<admin-schedule-form
+  [schedule]="schedule"
+  (saved)="saved.emit()"
+  [(display)]="displayFormModal"
+></admin-schedule-form>

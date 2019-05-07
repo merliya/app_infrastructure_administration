@@ -1,0 +1,16 @@
+
+.filter-container {
+    display: table;
+    width: 100%;
+    border-spacing: .5em;
+
+    p-checkbox, p-autoComplete {
+        display: table-row;
+    }
+}
+
+.checkbox-container {
+    max-height: 170px;
+    height: auto;
+    overflow-y: scroll;
+}

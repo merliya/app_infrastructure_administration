@@ -1,0 +1,35 @@
+.header-right {
+  float: right;
+}
+
+.right-header-link {
+  line-height: inherit;
+}
+
+.link {
+  cursor: pointer;
+}
+
+i.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+ }
+
+.empty-table {
+  background-color: #fff !important;
+
+  .empty-table-cell {
+    font-size: 12px !important;
+    text-align: center;
+    line-height: 2rem;
+    padding-bottom: 15px;
+  }
+
+  .button-container {
+    text-align: center;
+  }
+}
+
+.time-block {
+  white-space: pre-line;
+}
